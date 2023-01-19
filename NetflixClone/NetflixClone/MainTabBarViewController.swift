@@ -67,7 +67,6 @@ class MainTabBarViewController: UITabBarController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        print("aqui")
         self.setupTabBar()
     }
 }
@@ -82,8 +81,8 @@ extension MainTabBarViewController {
         appearance.configureWithTransparentBackground()
         itemApperance.normal.iconColor = .systemGray
         itemApperance.normal.titleTextAttributes = [.foregroundColor: UIColor.systemGray]
-        itemApperance.selected.iconColor = .white
-        itemApperance.selected.titleTextAttributes = [.font: selectedFont, .foregroundColor: UIColor.white]
+        itemApperance.selected.iconColor = .label
+        itemApperance.selected.titleTextAttributes = [.font: selectedFont, .foregroundColor: UIColor.label]
         appearance.stackedLayoutAppearance = itemApperance
         self.tabBar.standardAppearance = appearance
         self.tabBar.scrollEdgeAppearance = appearance
