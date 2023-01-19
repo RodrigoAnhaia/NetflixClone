@@ -23,6 +23,8 @@ class HomeViewController: UIViewController {
         
         self.homeFeedTable.delegate = self
         self.homeFeedTable.dataSource = self
+        
+        self.homeFeedTable.tableHeaderView = UIView(frame: CGRect(x: 0, y: 0, width: self.view.bounds.width, height: 450))
     }
 
     override func viewDidLayoutSubviews() {
@@ -53,8 +55,6 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: CollectionViewTableViewCell.identifier, for: indexPath) as? CollectionViewTableViewCell else {
             return UITableViewCell()
         }
-        
-        cell.textLabel?.text = "movies"
         
         return cell
     }
