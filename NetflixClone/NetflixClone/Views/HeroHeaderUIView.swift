@@ -66,12 +66,12 @@ extension HeroHeaderUIView {
     fileprivate func setupConstraints() {
         NSLayoutConstraint.activate([
             /// Play Button
-            self.playButton.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 90),
+            self.playButton.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 70),
             self.playButton.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -20),
             self.playButton.widthAnchor.constraint(equalToConstant: 120),
             
             /// Download Button
-            self.downloadButton.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -90),
+            self.downloadButton.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -70),
             self.downloadButton.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -20),
             self.downloadButton.widthAnchor.constraint(equalToConstant: 120),
             ])
