@@ -33,7 +33,7 @@ class CollectionViewTableViewCell: UITableViewCell {
 
     
     required init?(coder: NSCoder) {
-        fatalError("Do not create cell with \(CollectionViewTableViewCell.identifier)")
+        fatalError("Could not create cell: \(CollectionViewTableViewCell.identifier)")
     }
     
     override func layoutSubviews() {
