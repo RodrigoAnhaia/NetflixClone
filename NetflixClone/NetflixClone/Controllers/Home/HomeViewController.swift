@@ -9,7 +9,7 @@ import UIKit
 
 class HomeViewController: UIViewController {
     
-    let sectionTiles: [String] = ["Trending Movies", "Popular", "Trending TV", "Upcoming Movies", "Top Rated"]
+    let sectionTiles: [String] = ["Trending Movies", "Trending TV", "Popular", "Upcoming Movies", "Top Rated"]
     
     private lazy var homeFeedTable: UITableView = {
         let table = UITableView(frame: .zero, style: .grouped)
@@ -26,6 +26,8 @@ class HomeViewController: UIViewController {
         
         self.homeFeedTable.delegate = self
         self.homeFeedTable.dataSource = self
+        
+        self.fetchData()
         
     }
     
@@ -62,6 +64,33 @@ extension HomeViewController {
     fileprivate func setupHeaderView() {
         let headerView = HeroHeaderUIView(frame: CGRect(x: 0, y: 0, width: self.view.bounds.width, height: 450))
         self.homeFeedTable.tableHeaderView = headerView
+    }
+    
+    fileprivate func fetchData() {
+//        APICaller.shared.getTrendingMovies { results in
+//            switch results {
+//            case .success(let movies):
+//                print(movies)
+//            case .failure(let error):
+//                print(error)
+//            }
+//        }
+        
+//        APICaller.shared.getTrendingTvs { results in
+//            // 
+//        }
+        
+//        APICaller.shared.getUpcomingMovies { results in
+//            //
+//        }
+        
+//        APICaller.shared.getPopular { results in
+//
+//        }
+        
+        APICaller.shared.getTopRated { results in
+            
+        }
     }
 }
 
