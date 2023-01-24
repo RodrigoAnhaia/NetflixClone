@@ -17,6 +17,14 @@ class SearchViewController: UIViewController {
         return table
     }()
     
+    private let searchController: UISearchController = {
+        let search = UISearchController(searchResultsController: SearchResultsViewController())
+        search.searchBar.placeholder = "Search for a Movie or a Tv Show"
+        search.searchBar.searchBarStyle = .minimal
+        return search
+        
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = .systemBackground
@@ -30,6 +38,8 @@ class SearchViewController: UIViewController {
         self.discoverTableView.delegate = self
         self.discoverTableView.dataSource = self
         
+        self.navigationController?.navigationBar.tintColor = .white
+        self.searchController.searchResultsUpdater = self
     }
 
     override func viewDidLayoutSubviews() {
@@ -41,6 +51,7 @@ class SearchViewController: UIViewController {
 extension SearchViewController {
     fileprivate func setupLayout() {
         self.view.addSubview(self.discoverTableView)
+        self.navigationItem.searchController = self.searchController
     }
     
     fileprivate func fetchDiscoverMovies() {
@@ -79,5 +90,28 @@ extension SearchViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 140
+    }
+}
+
+extension SearchViewController: UISearchResultsUpdating {
+    func updateSearchResults(for searchController: UISearchController) {
+        let searchBar = searchController.searchBar
+        
+        guard let query = searchBar.text,
+        !query.trimmingCharacters(in: .whitespaces).isEmpty,
+        query.trimmingCharacters(in: .whitespaces).count >= 3,
+        let resultController = searchController.searchResultsController as? SearchResultsViewController else { return }
+        
+        APICaller.shared.search(with: query) { result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let titles):
+                    resultController.titles = titles
+                    resultController.searchResultsCollectionView.reloadData()
+                case .failure(let error):
+                    print(error.localizedDescription)
+                }
+            }
+        }
     }
 }
