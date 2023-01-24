@@ -11,7 +11,7 @@ class SearchViewController: UIViewController {
     
     private var titles: [Title] = [Title]()
     
-    private let discoverTable: UITableView = {
+    private let discoverTableView: UITableView = {
         let table = UITableView()
         table.register(TitleTableViewCell.self, forCellReuseIdentifier: TitleTableViewCell.identifier)
         return table
@@ -27,20 +27,20 @@ class SearchViewController: UIViewController {
         self.setupLayout()
         self.fetchDiscoverMovies()
         
-        self.discoverTable.delegate = self
-        self.discoverTable.dataSource = self
+        self.discoverTableView.delegate = self
+        self.discoverTableView.dataSource = self
         
     }
 
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        self.discoverTable.frame = self.view.bounds
+        self.discoverTableView.frame = self.view.bounds
     }
 }
 
 extension SearchViewController {
     fileprivate func setupLayout() {
-        self.view.addSubview(self.discoverTable)
+        self.view.addSubview(self.discoverTableView)
     }
     
     fileprivate func fetchDiscoverMovies() {
@@ -49,7 +49,7 @@ extension SearchViewController {
             case .success(let titles):
                 self?.titles = titles
                 DispatchQueue.main.async {
-                    self?.discoverTable.reloadData()
+                    self?.discoverTableView.reloadData()
                 }
             case .failure(let error):
                 print(error.localizedDescription)
