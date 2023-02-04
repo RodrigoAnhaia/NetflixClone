@@ -19,6 +19,7 @@ class HeroHeaderUIView: UIView {
         return button
     }()
     
+   
     private let playButton: UIButton = {
         let button = UIButton()
         button.setTitle("Play", for: .normal)
