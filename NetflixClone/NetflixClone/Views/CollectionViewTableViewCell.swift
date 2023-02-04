@@ -54,6 +54,17 @@ class CollectionViewTableViewCell: UITableViewCell {
             self?.collectionView.reloadData()
         }
     }
+    
+    private func downloadTitleAt(indexPath: IndexPath) {
+        DataPersistenceManager.shared.downloadTitleWith(model: self.titles[indexPath.row]) { result in
+            switch result {
+            case .success():
+                print("download from database")
+            case .failure(let error):
+                print(String(describing: error))
+            }
+        }
+    }
 }
 
 extension CollectionViewTableViewCell {
@@ -100,5 +111,16 @@ extension CollectionViewTableViewCell: UICollectionViewDelegate, UICollectionVie
                 print(error.localizedDescription)
             }
         }
+    }
+    func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
+        let config = UIContextMenuConfiguration(identifier: nil,
+                                                previewProvider: nil) { _ in
+            let downloadAction = UIAction(title: "Download", state: .off) { [weak self] _ in
+                self?.downloadTitleAt(indexPath: indexPath)
+            }
+            return UIMenu(options: .displayInline, children: [downloadAction])
+        }
+
+        return config
     }
 }

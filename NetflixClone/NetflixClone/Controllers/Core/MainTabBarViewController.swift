@@ -79,7 +79,6 @@ extension MainTabBarViewController {
         let itemApperance = UITabBarItemAppearance()
         let selectedFont = UIFont.systemFont(ofSize: 12, weight: .bold)
         
-        appearance.configureWithTransparentBackground()
         itemApperance.normal.iconColor = .systemGray
         itemApperance.normal.titleTextAttributes = [.foregroundColor: UIColor.systemGray]
         itemApperance.selected.iconColor = .label

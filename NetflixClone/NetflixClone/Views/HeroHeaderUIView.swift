@@ -18,7 +18,8 @@ class HeroHeaderUIView: UIView {
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
-
+    
+   
     private let playButton: UIButton = {
         let button = UIButton()
         button.setTitle("Play", for: .normal)
@@ -36,21 +37,26 @@ class HeroHeaderUIView: UIView {
         imageView.image = UIImage(named: "heroImage")
         return imageView
     }()
-  
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         self.setupLayout()
         self.setupConstraints()
-        self.addGradient()
     }
     
     required init?(coder: NSCoder) {
         fatalError("Cannot rendenring HeroHeaderUIView")
     }
-
+    
     override func layoutSubviews() {
         super.layoutSubviews()
-        self.heroImageView.frame = self.bounds 
+        self.heroImageView.frame = self.bounds
+    }
+    
+    public func configure(with model: TitleViewModel) {
+        guard let url = URL(string: "https://image.tmdb.org/t/p/w500/\(model.posterURL)") else { return }
+        
+        self.heroImageView.sd_setImage(with: url)
     }
 }
 
@@ -58,6 +64,7 @@ extension HeroHeaderUIView {
     //MARK: - SetupLayout
     fileprivate func setupLayout() {
         self.addSubview(self.heroImageView)
+        self.addGradient()
         self.addSubview(self.playButton)
         self.addSubview(self.downloadButton)
     }
@@ -74,7 +81,7 @@ extension HeroHeaderUIView {
             self.downloadButton.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -70),
             self.downloadButton.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -20),
             self.downloadButton.widthAnchor.constraint(equalToConstant: 120),
-            ])
+        ])
     }
     
     //MARK: - Add Gradient
@@ -84,7 +91,7 @@ extension HeroHeaderUIView {
             UIColor.clear.cgColor,
             UIColor.systemBackground.cgColor
         ]
-        gradientLayer.frame = self.bounds
+        gradientLayer.frame = bounds
         self.layer.addSublayer(gradientLayer)
     }
 }
