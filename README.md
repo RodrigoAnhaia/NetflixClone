@@ -1,7 +1,7 @@
 # NetflixClone
 
 <h3 align="center">
-Netflix Clone </a> 👋
+Netflix Clone </a> 
 </h3>
 
 - MVVM architecture
