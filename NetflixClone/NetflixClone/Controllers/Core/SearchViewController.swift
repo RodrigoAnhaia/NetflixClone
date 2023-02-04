@@ -91,9 +91,41 @@ extension SearchViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 140
     }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+        
+        let title = self.titles[indexPath.row]
+        
+        guard let titleName = title.original_title ?? title.original_name else { return }
+        
+        APICaller.shared.getMovie(with: titleName) { [weak self] result in
+            switch result {
+            case .success(let videoElement):
+                DispatchQueue.main.async {
+                    let vc = TitlePreviewViewController()
+                    vc.configure(with: TitlePreviewViewModel(title: titleName, youtubeView: videoElement, titleOverview: title.overview ?? "Unknown"))
+                    
+                    self?.navigationController?.pushViewController(vc, animated: true)
+                }
+                
+            case .failure(let error):
+                print(error.localizedDescription)
+            }
+        }
+    }
 }
 
-extension SearchViewController: UISearchResultsUpdating {
+extension SearchViewController: UISearchResultsUpdating, SearchResultsViewControllerDelegate {
+    func searchResultsViewControllerDidTapItem(_ viewModel: TitlePreviewViewModel) {
+        DispatchQueue.main.async { [weak self] in
+            let vc = TitlePreviewViewController()
+            vc.configure(with: viewModel)
+            
+            self?.navigationController?.pushViewController(vc, animated: true)
+        }
+    }
+    
     func updateSearchResults(for searchController: UISearchController) {
         let searchBar = searchController.searchBar
         
@@ -101,6 +133,8 @@ extension SearchViewController: UISearchResultsUpdating {
         !query.trimmingCharacters(in: .whitespaces).isEmpty,
         query.trimmingCharacters(in: .whitespaces).count >= 3,
         let resultController = searchController.searchResultsController as? SearchResultsViewController else { return }
+        
+        resultController.delegate = self
         
         APICaller.shared.search(with: query) { result in
             DispatchQueue.main.async {
