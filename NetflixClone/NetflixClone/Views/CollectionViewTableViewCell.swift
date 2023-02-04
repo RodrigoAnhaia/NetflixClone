@@ -56,7 +56,14 @@ class CollectionViewTableViewCell: UITableViewCell {
     }
     
     private func downloadTitleAt(indexPath: IndexPath) {
-        //Todo
+        DataPersistenceManager.shared.downloadTitleWith(model: self.titles[indexPath.row]) { result in
+            switch result {
+            case .success():
+                print("download from database")
+            case .failure(let error):
+                print(String(describing: error))
+            }
+        }
     }
 }
 

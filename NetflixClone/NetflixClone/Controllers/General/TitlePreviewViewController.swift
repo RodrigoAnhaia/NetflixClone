@@ -88,11 +88,12 @@ extension TitlePreviewViewController {
     }
     
     func configure(with model: TitlePreviewViewModel) {
-        self.titleLabel.text = model.title
-        self.overviewLabel.text = model.titleOverview
-        
-        guard let url = URL(string: "https://www.youtube.com/embed/\(model.youtubeView.id.videoId)") else { return }
-        
-        self.webView.load(URLRequest(url: url))
+        DispatchQueue.main.async {
+            guard let url = URL(string: "https://www.youtube.com/embed/\(model.youtubeView.id.videoId)") else { return }
+            
+            self.titleLabel.text = model.title
+            self.overviewLabel.text = model.titleOverview
+            self.webView.load(URLRequest(url: url))
+        }
     }
 }
