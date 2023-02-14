@@ -25,13 +25,13 @@ class DataPersistenceManager {
         let item = TitleItem(context: context)
         
         item.id = Int64(model.id)
+        item.title = model.title
         item.original_title = model.original_title
-        item.original_name = model.original_name
         item.overview = model.overview
         item.media_type = model.media_type
         item.poster_path = model.poster_path
         item.release_date = model.release_date
-        item.vote_average = model.vote_avarege ?? 0
+        item.vote_average = model.vote_average ?? 0
         item.vote_count = Int64(model.vote_count)
         
         do {

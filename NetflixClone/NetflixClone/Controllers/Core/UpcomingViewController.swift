@@ -51,7 +51,7 @@ extension UpcomingViewController {
                     self?.upcomingTableView.reloadData()
                 }
             case .failure(let error):
-                print(error.localizedDescription)
+                print(String(describing: error))
             }
         }
     }
@@ -70,7 +70,7 @@ extension UpcomingViewController: UITableViewDelegate, UITableViewDataSource {
         
         let title = titles[indexPath.row]
         
-        cell.configure(with: TitleViewModel(titleName: title.original_title ?? title.original_name ?? "Unknown", posterURL: title.poster_path ?? ""))
+        cell.configure(with: TitleViewModel(titleName: title.original_title ?? title.title ?? "Unknown", posterURL: title.poster_path ?? ""))
    
         return cell
     }
@@ -84,20 +84,20 @@ extension UpcomingViewController: UITableViewDelegate, UITableViewDataSource {
         
         let title = self.titles[indexPath.row]
         
-        guard let titleName = title.original_title ?? title.original_name else { return }
+        guard let titleName = title.original_title ?? title.title else { return }
         
         APICaller.shared.getMovie(with: titleName) { [weak self] result in
             switch result {
             case .success(let videoElement):
                 DispatchQueue.main.async {
                     let vc = TitlePreviewViewController()
-                    vc.configure(with: TitlePreviewViewModel(title: titleName, youtubeView: videoElement, titleOverview: title.overview ?? "Unknown"))
+                    vc.configure(with: TitlePreviewViewModel(title: titleName, youtubeView: videoElement, titleOverview: title.overview ?? "Unknown", date: title.release_date ?? "", posterURL: title.poster_path ?? "", voteAverage: title.vote_average), genres: "lol")
                     
                     self?.navigationController?.pushViewController(vc, animated: true)
                 }
                 
             case .failure(let error):
-                print(error.localizedDescription)
+                print(String(describing: error))
             }
         }
     }

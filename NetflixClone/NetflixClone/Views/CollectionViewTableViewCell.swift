@@ -96,19 +96,17 @@ extension CollectionViewTableViewCell: UICollectionViewDelegate, UICollectionVie
         collectionView.deselectItem(at: indexPath, animated: true)
         
         let title = self.titles[indexPath.row]
-        guard let titleName = title.original_name ?? title.original_title else { return }
+        guard let titleName = title.title ?? title.original_title else { return }
         
         APICaller.shared.getMovie(with: titleName + " trailer") { [weak self] result in
             switch result {
             case .success(let videoElement):
-                
-                let title = self?.titles[indexPath.row]
-                guard let titleOverview = title?.overview,
+                guard let titleOverview = title.overview,
                 let strongSelf = self else { return }
-                let viewModel = TitlePreviewViewModel(title: titleName, youtubeView: videoElement, titleOverview: titleOverview)
+                let viewModel = TitlePreviewViewModel(title: titleName, youtubeView: videoElement, titleOverview: titleOverview, date: title.release_date ?? "", posterURL: title.poster_path ?? "", voteAverage: title.vote_average)
                 self?.delegate?.CollectionViewTableViewCellDidTapCell(strongSelf, viewModel: viewModel)
             case .failure(let error):
-                print(error.localizedDescription)
+                print(String(describing: error))
             }
         }
     }
