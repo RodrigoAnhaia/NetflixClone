@@ -71,17 +71,17 @@ extension SearchResultsViewController: UICollectionViewDelegate, UICollectionVie
         
         let title = self.titles[indexPath.row]
         
-        guard let titleName = title.original_title ?? title.original_name else { return }
+        guard let titleName = title.original_title ?? title.title else { return }
         
         APICaller.shared.getMovie(with: titleName) { [weak self] result in
             switch result {
             case .success(let videoElement):
                 DispatchQueue.main.async {
-                    self?.delegate?.searchResultsViewControllerDidTapItem(TitlePreviewViewModel(title: titleName, youtubeView: videoElement, titleOverview: title.overview ?? "Unknown"))
+                    self?.delegate?.searchResultsViewControllerDidTapItem(TitlePreviewViewModel(title: titleName, youtubeView: videoElement, titleOverview: title.overview ?? "Unknown", date: title.release_date ?? "", posterURL: title.poster_path ?? "", voteAverage: title.vote_average))
                 }
                 
             case .failure(let error):
-                print(error.localizedDescription)
+                print(String(describing: error))
             }
         }
     }

@@ -13,14 +13,16 @@ enum Sections: Int {
     case Popular = 2
     case Upcoming = 3
     case TopRated = 4
+    case Animes = 5
 }
 
 class HomeViewController: UIViewController {
     
     private var randomTrendingMovie: Title?
     private var heroHeader: HeroHeaderUIView?
+    private var titles: [Title] = [Title]()
     
-    let sectionTiles: [String] = ["Trending Movies", "Trending TV", "Popular", "Upcoming Movies", "Top Rated"]
+    let sectionTiles: [String] = ["Trending Movies", "Trending TV", "Popular", "Upcoming Movies", "Top Rated", "Animes"]
     
     private lazy var homeFeedTable: UITableView = {
         let table = UITableView(frame: .zero, style: .grouped)
@@ -52,14 +54,14 @@ extension HomeViewController {
     }
     
     fileprivate func configureNavBar() {
-    /// Image Logo
+        /// Image Logo
         var image = UIImage(named: "netflixLogo")
         image = image?.withRenderingMode(.alwaysOriginal)
         
         /// Left Bar Button
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(image: image, style: .done, target: self, action: nil)
         self.navigationItem.leftBarButtonItem?.imageInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 490)
-       
+        
         /// Right Bar Button
         self.navigationItem.rightBarButtonItems = [
             UIBarButtonItem(image: UIImage(systemName: "person"), style: .done, target: self, action: nil),
@@ -76,9 +78,9 @@ extension HomeViewController {
                 let selectedTitle = titles.randomElement()
                 
                 self?.randomTrendingMovie = titles.randomElement()
-                self?.heroHeader?.configure(with: TitleViewModel(titleName: selectedTitle?.original_name ?? selectedTitle?.original_title ?? "Unknown", posterURL: selectedTitle?.poster_path ?? ""))
+                self?.heroHeader?.configure(with: TitleViewModel(titleName: selectedTitle?.title ?? selectedTitle?.original_title ?? "Unknown", posterURL: selectedTitle?.poster_path ?? ""))
             case .failure(let error):
-                print(error.localizedDescription)
+                print(String(describing: error))
             }
         }
         
@@ -110,8 +112,10 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
                 switch result {
                 case .success(let titles):
                     cell.configure(with: titles)
+                    self.titles = titles
+                    
                 case .failure(let error):
-                    print(error.localizedDescription)
+                    print(String(describing: error))
                 }
             }
             
@@ -121,7 +125,7 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
                 case .success(let titles):
                     cell.configure(with: titles)
                 case .failure(let error):
-                    print(error.localizedDescription)
+                    print(String(describing: error))
                 }
             }
             
@@ -131,7 +135,7 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
                 case .success(let titles):
                     cell.configure(with: titles)
                 case .failure(let error):
-                    print(error.localizedDescription)
+                    print(String(describing: error))
                 }
             }
             
@@ -141,7 +145,7 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
                 case .success(let titles):
                     cell.configure(with: titles)
                 case .failure(let error):
-                    print(error.localizedDescription)
+                    print(String(describing: error))
                 }
             }
             
@@ -151,9 +155,20 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
                 case .success(let titles):
                     cell.configure(with: titles)
                 case .failure(let error):
-                    print(error.localizedDescription)
+                    print(String(describing: error))
                 }
             }
+            
+        case Sections.Animes.rawValue:
+            APICaller.shared.getAnimes { result in
+                switch result {
+                case .success(let titles):
+                    cell.configure(with: titles)
+                case .failure(let error):
+                    print(String(describing: error))
+                }
+            }
+            
         default:
             return UITableViewCell()
         }
@@ -192,9 +207,32 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
 
 extension HomeViewController: CollectionViewTableViewCellDelegate {
     func CollectionViewTableViewCellDidTapCell(_ cell: CollectionViewTableViewCell, viewModel: TitlePreviewViewModel) {
+        
+        guard let title = self.titles.first(where: { $0.title == viewModel.title }) else { return }
+        
+        APICaller.shared.getMovieRecommendations(with: title.id) { result in
+            switch result {
+            case .success(let recommendations):
+                print(recommendations)
+            case .failure(let error):
+                print(String(describing: error))
+            }
+        }
+        
+        APICaller.shared.getMovieCast(with: title.id) { result in
+            switch result {
+            case .success(let credits):
+                print(credits)
+            case .failure(let error):
+                print(String(describing: error))
+            }
+        }
+        
         DispatchQueue.main.async { [weak self] in
             let vc = TitlePreviewViewController()
-            vc.configure(with: viewModel)
+            
+            let genresText = APICaller.shared.getGeneresText(of: title)
+            vc.configure(with: viewModel, genres: genresText)
             self?.navigationController?.pushViewController(vc, animated: true)
         }
     }
